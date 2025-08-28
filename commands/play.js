@@ -9,12 +9,11 @@ async function playCommand(sock, chatId, message) {
         // Validate input with styled message
         if (!searchQuery) {
             return await sock.sendMessage(chatId, {
-                text: "╔════════════════════════╗\n" +
-                      "║     🎵 *MUSIC HUB*      ║\n" +
-                      "╠════════════════════════╣\n" +
-                      "║ Please specify a song! ║\n" +
-                      "║ Example: `.play faded` ║\n" +
-                      "╚════════════════════════╝"
+                text: `┌ ❏ *⌜ MUSIC HUB ⌟* ❏
+│
+├◆ 🎵 Please specify a song!
+├◆ 💡 Example: \`.play faded\`
+└ ❏`
             });
         }
 
@@ -31,12 +30,11 @@ async function playCommand(sock, chatId, message) {
         // Validate API response
         if (!data?.status || !data?.result) {
             return await sock.sendMessage(chatId, {
-                text: "╔════════════════════════╗\n" +
-                      "║   ❌ *SEARCH FAILED*    ║\n" +
-                      "╠════════════════════════╣\n" +
-                      "║ Song not found!        ║\n" +
-                      "║ Try different keywords ║\n" +
-                      "╚════════════════════════╝"
+                text: `┌ ❏ *⌜ SEARCH FAILED ⌟* ❏
+│
+├◆ ❌ Song not found!
+├◆ 🔍 Try different keywords
+└ ❏`
             });
         }
 
@@ -50,18 +48,15 @@ async function playCommand(sock, chatId, message) {
             : 'N/A';
 
         // Create styled box message
-        const boxMessage = 
-            "╔══════════════════════════════╗\n" +
-            "║        🎵 *AUDIO FOUND*       ║\n" +
-            "╠══════════════════════════════╣\n" +
-            `║ *Title:* ${songData.title || 'Unknown'}\n` +
-            `║ *Duration:* ${songData.duration || 'N/A'}\n` +
-            `║ *Views:* ${formattedViews}\n` +
-            `║ *Published:* ${songData.published || 'N/A'}\n` +
-            `║ *Source:* YouTube\n` +
-            "╠══════════════════════════════╣\n" +
-            "║ *GODSZEAL XMD* • Premium Music\n" +
-            "╚══════════════════════════════╝";
+        const boxMessage = `┌ ❏ *⌜ AUDIO FOUND ⌟* ❏
+│
+├◆ 🎵 Title: ${songData.title || 'Unknown'}
+├◆ ⏱️ Duration: ${songData.duration || 'N/A'}
+├◆ 👀 Views: ${formattedViews}
+├◆ 📅 Published: ${songData.published || 'N/A'}
+├◆ 🌐 Source: YouTube
+├◆ 💎 GODSZEAL XMD • Premium Music
+└ ❏`;
 
         // Send metadata with thumbnail
         await sock.sendMessage(chatId, {
@@ -71,7 +66,8 @@ async function playCommand(sock, chatId, message) {
 
         // Send download notification
         await sock.sendMessage(chatId, {
-            text: "⬇️ *Downloading audio...*\nEstimated time: 10-30 seconds",
+            text: `⏳ *Downloading audio...*
+Estimated time: 10-30 seconds`,
             react: { text: '⏳', key: message.key }
         });
 
@@ -85,12 +81,11 @@ async function playCommand(sock, chatId, message) {
 
         // Send success box
         await sock.sendMessage(chatId, {
-            text: "╔════════════════════════╗\n" +
-                  "║   ✅ *DOWNLOAD COMPLETE* ║\n" +
-                  "╠════════════════════════╣\n" +
-                  "║ Enjoy your music!      ║\n" +
-                  `║ Title: ${songData.title.substring(0, 15)}... ║\n` +
-                  "╚════════════════════════╝",
+            text: `┌ ❏ *⌜ DOWNLOAD COMPLETE ⌟* ❏
+│
+├◆ ✅ Enjoy your music!
+├◆ 🎵 Title: ${songData.title.substring(0, 15)}...
+└ ❏`,
             react: { text: '🎧', key: message.key }
         });
 
@@ -98,14 +93,11 @@ async function playCommand(sock, chatId, message) {
         console.error('Play Command Error:', error);
         
         // Create error box
-        const errorBox = 
-            "╔════════════════════════╗\n" +
-            "║    ❌ *DOWNLOAD ERROR*   ║\n" +
-            "╠════════════════════════╣\n" +
-            "║ Failed to process your ║\n" +
-            "║ request. Please try    ║\n" +
-            "║ again later!           ║\n" +
-            "╚════════════════════════╝";
+        const errorBox = `┌ ❏ *⌜ DOWNLOAD ERROR ⌟* ❏
+│
+├◆ ❌ Failed to process your request
+├◆ 🔁 Please try again later!
+└ ❏`;
 
         await sock.sendMessage(chatId, {
             text: errorBox,
