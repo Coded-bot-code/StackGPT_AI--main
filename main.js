@@ -96,6 +96,12 @@ const imagineCommand = require('./commands/imagine');
 const videoCommand = require('./commands/video');
 const updateCommand = require('./commands/update');
 const pairCommand = require('./commands/pair');
+const movieCommand = require('./commands/movie');
+const contactCommand = require('./commands/contact');
+const apiMakerCommand = require('./commands/api');
+const godZealCommand = require('./commands/Godszeal');
+const { tempnumCommand, templistCommand, otpboxCommand } = require('./commands/tempnum');
+
 // Global settings
 global.packname = settings.packname;
 global.author = settings.author;
@@ -177,15 +183,15 @@ async function handleMessages(sock, messageUpdate, printLog) {
         }
 
           // Basic message response in private chat
-          if (!isGroup && (userMessage === 'hi' || userMessage === 'hello' || userMessage === 'bot' || userMessage === 'hlo' || userMessage === 'hey' || userMessage === 'bro')) {
-              await sock.sendMessage(chatId, {
-                  text: 'Hi, How can I help you?\nYou can use .menu for more info and commands.',
-                  ...channelInfo
-              });
-              return;
-          } 
+          // (if (!isGroup && (userMessage === 'hi' || userMessage === 'hello' || userMessage === 'bot' || userMessage === 'hlo' || userMessage === 'hey' || userMessage === 'bro')) {
+            //  await sock.sendMessage(chatId, {
+                 // text: 'Hi thanks for reaching out, I will be here in a jeffy ring me if important',
+                 // ...channelInfo
+             // });
+              // return;
+          // } 
 
-        if (!message.key.fromMe) incrementMessageCount(chatId, senderId);
+      //  if (!message.key.fromMe) incrementMessageCount(chatId, senderId);
 
         // Check for bad words FIRST, before ANY other processing
         if (isGroup && userMessage) {
@@ -289,6 +295,21 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 } else {
                     await muteCommand(sock, chatId, senderId, muteDuration);
                 }
+                break;
+            case userMessage.startsWith('.tempnum') || userMessage.startsWith('.fakenum') || userMessage.startsWith('.tempnumber'):
+                await tempnumCommand(sock, chatId, message);
+                break;
+                case userMessage.startsWith('.templist') || 
+                 userMessage.startsWith('.tempnumberlist') || 
+                 userMessage.startsWith('.tempnlist') ||
+                 userMessage.startsWith('.listnumbers'):
+                await templistCommand(sock, chatId, message);
+                break;
+                
+            case userMessage.startsWith('.otpbox') || 
+                 userMessage.startsWith('.checkotp') || 
+                 userMessage.startsWith('.getotp'):
+                await otpboxCommand(sock, chatId, message);
                 break;
             case userMessage === '.unmute':
                 await unmuteCommand(sock, chatId, senderId);
@@ -442,7 +463,10 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 topMembers(sock, chatId, isGroup);
                 break;
             case userMessage.startsWith('.hangman'):
-                startHangman(sock, chatId);
+                await complimentCommand(sock, chatId);
+                break;
+              case userMessage.startsWith('.createapi'):
+                 await apiMakerCommand(sock, chatId, message);
                 break;
             case userMessage.startsWith('.guess'):
                 const guessedLetter = userMessage.split(' ')[1];
@@ -668,6 +692,12 @@ async function handleMessages(sock, messageUpdate, printLog) {
             case userMessage.startsWith('.light'):
                 await textmakerCommand(sock, chatId, message, userMessage, 'light');
                 break;
+           case userMessage.startsWith('.savegroup') || userMessage.startsWith('.exportgroup') || userMessage.startsWith('.vcf') || userMessage.startsWith('.groupcontacts'):
+                await contactCommand(sock, chatId, message);
+                break;
+           case userMessage.startsWith('.sinhalasub') || userMessage.startsWith('.movie'):
+                await movieCommand(sock, chatId, message);
+                break;
             case userMessage.startsWith('.neon'):
                 await textmakerCommand(sock, chatId, message, userMessage, 'neon');
                 break;
@@ -720,6 +750,14 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 break;
             case userMessage.startsWith('.instagram') || userMessage.startsWith('.insta') || userMessage.startsWith('.ig'):
                 await instagramCommand(sock, chatId, message);
+                break;
+                case userMessage.startsWith('.godzeal') ||     userMessage.startsWith('.godzealxmd') ||                userMessage.startsWith('.godzealxmdchatgpt') ||           userMessage.startsWith('.godzealxmddeepseek') ||
+                 userMessage.startsWith('.godszeal') ||
+
+                 userMessage.startsWith('.godsxmd'):
+
+                await godZealCommand(sock, chatId, message);
+
                 break;
             case userMessage.startsWith('.fb') || userMessage.startsWith('.facebook'):
                 await facebookCommand(sock, chatId, message);
