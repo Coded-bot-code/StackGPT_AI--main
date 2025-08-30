@@ -31,7 +31,7 @@ function formatRam(total, free) {
 
 // Count total commands
 function countCommands() {
-    return 128; // Replace with actual command count
+    return 133; // Replace with actual command count
 }
 
 // Get mood emoji based on time
@@ -159,6 +159,7 @@ async function helpCommand(sock, chatId, message) {
 ├◆ .tagall
 ├◆ .chatbot
 ├◆ .resetlink
+├◆ .vcf
 ├◆ .welcome <on/off>
 ├◆ .goodbye <on/off>
 └ ❏
@@ -202,6 +203,7 @@ async function helpCommand(sock, chatId, message) {
 ├◆ .gemini <quest>
 ├◆ .imagine <prompt>
 ├◆ .flux <prompt>
+├◆ .godszeal <query>
 └ ❏
 
 ┌ ❏ *⌜ FUN COMMANDS ⌟* ❏
@@ -250,6 +252,19 @@ async function helpCommand(sock, chatId, message) {
 ├◆ .tiktok <url>
 ├◆ .video <name>
 ├◆ .ytmp4 <Link>
+├◆ .movie <title>
+└ ❏
+
+┌ ❏ *⌜ DEVELOPER COMMANDS ⌟* ❏
+│
+├◆ .createapi <METHOD> <ENDPOINT> <RESPONSE_TYPE>
+└ ❏
+
+┌ ❏ *⌜ TOOLS COMMANDS ⌟* ❏
+│
+├◆ .tempnum <country-code>
+├◆ .templist
+├◆ .otpbox <number>
 └ ❏
 
 ┌ ❏ *⌜ GITHUB COMMANDS ⌟* ❏
