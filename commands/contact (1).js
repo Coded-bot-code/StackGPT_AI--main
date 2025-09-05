@@ -1,4 +1,4 @@
-// This plugin was created by David Cyril 
+// This plugin was created by God's Zeal Tech 
 // Don't Edit Or share without given me credits 
 
 async function contactCommand(sock, chatId, message) {
