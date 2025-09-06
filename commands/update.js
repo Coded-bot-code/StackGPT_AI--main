@@ -6,7 +6,6 @@ const fs = require('fs');
 const path = require("path");
 const os = require('os');
 const AdmZip = require("adm-zip");
-const { exec } = require('child_process');
 
 // Temporary storage helper for commit hash
 const TEMP_FILE = path.join(os.tmpdir(), 'godszeal_update.hash');
@@ -154,14 +153,18 @@ async function updateCommand(sock, chatId, message) {
         copyFolderSync(sourcePath, destinationPath);
         setCommitHash(latestCommitHash);
 
-        // Final success message - SEND BEFORE CLEANUP/RESTART
+        // Cleanup
+        fs.unlinkSync(zipPath);
+        fs.rmSync(extractPath, { recursive: true, force: true });
+
+        // Final success message
         await sock.sendMessage(chatId, {
-            image: { url: "https://i.ibb.co/4jT4hRJ/godszeal-alive.jpg" },
+            image: { url: "https://jkgzqdubijffqnwcdqvp.supabase.co/storage/v1/object/public/uploads/Godszeal40.jpeg" },
             caption: `┌ ❏ *⌜ UPDATE COMPLETE ⌟* ❏
 │
 ├◆ ✅ *GODSZEAL XMD successfully updated!*
 ├◆ 🆕 New Version: ${latestCommitHash.substring(0, 7)}
-├◆ ⚡ Preparing for graceful restart...
+├◆ ⚡ Bot will restart automatically
 │
 ├◆ *WHAT'S NEW:*
 ├◆ ────────────────────
@@ -188,44 +191,18 @@ ${'='.repeat(30)}`,
                 externalAdReply: {
                     title: 'GODSZEAL XMD Bot',
                     body: 'Created with Godszeal Tech',
-                    thumbnailUrl: "https://i.ibb.co/4jT4hRJ/godszeal-alive.jpg",
+                    thumbnailUrl: "https://jkgzqdubijffqnwcdqvp.supabase.co/storage/v1/object/public/uploads/Godszeal40.jpeg",
                     mediaType: 1,
                     renderSmallerThumbnail: true,
                     showAdAttribution: true,
-                    mediaUrl: "https://youtube.com/@luckytechhub-iu7sm",
-                    sourceUrl: "https://youtube.com/@luckytechhub-iu7sm"
+                    mediaUrl: "https://youtube.com/@Godszealtech",
+                    sourceUrl: "https://youtube.com/@Godszealtech"
                 }
             }
         }, { quoted: message });
 
-        // CLEANUP - Do this AFTER sending success message
-        try {
-            fs.unlinkSync(zipPath);
-        } catch (e) {
-            console.log('Cleanup: Zip file locked, will clean later');
-        }
-        
-        try {
-            fs.rmSync(extractPath, { recursive: true, force: true });
-        } catch (e) {
-            console.log('Cleanup: Extract folder locked, will clean later');
-        }
-
-        // GRACEFUL RESTART - Critical Fix
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Ensure message delivery
-        
-        // Use child process to restart without immediate termination
-        exec('node ' + path.join(__dirname, '../index.js'), {
-            cwd: path.join(__dirname, '..'),
-            detached: true,
-            stdio: 'inherit'
-        });
-        
-        // Terminate current process AFTER new instance starts
-        setTimeout(() => {
-            console.log("Shutting down old process after update");
-            process.exit(0);
-        }, 5000);
+        // Restart bot
+        setTimeout(() => process.exit(0), 3000);
 
     } catch (error) {
         console.error('Update Command Error:', error);
@@ -270,11 +247,7 @@ function copyFolderSync(source, target) {
         if (fs.lstatSync(srcPath).isDirectory()) {
             copyFolderSync(srcPath, destPath);
         } else {
-            try {
-                fs.copyFileSync(srcPath, destPath);
-            } catch (err) {
-                console.log(`⚠️ Failed to copy ${item}, skipping:`, err.message);
-            }
+            fs.copyFileSync(srcPath, destPath);
         }
     }
 }
