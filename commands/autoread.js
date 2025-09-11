@@ -1,5 +1,5 @@
 /**
- * Knight Bot - A WhatsApp Bot
+ * 𝐆𝐎𝐃𝐒𝐙𝐄𝐀𝐋 𝐗𝐌𝐃 - A WhatsApp Bot
  * Autoread Command - Automatically read all messages
  */
 
@@ -28,8 +28,8 @@ async function autoreadCommand(sock, chatId, message) {
                     forwardingScore: 1,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: '120363161513685998@newsletter',
-                        newsletterName: 'KnightBot MD',
+                        newsletterJid: '120363269950668068@newsletter',
+                        newsletterName: '❦ ════ •⊰❂ GODSZEAL XMD  ❂⊱• ════ ❦',
                         serverMessageId: -1
                     }
                 }
@@ -59,8 +59,8 @@ async function autoreadCommand(sock, chatId, message) {
                         forwardingScore: 1,
                         isForwarded: true,
                         forwardedNewsletterMessageInfo: {
-                            newsletterJid: '120363161513685998@newsletter',
-                            newsletterName: 'KnightBot MD',
+                            newsletterJid: '120363269950668068@newsletter',
+                            newsletterName: '❦ ════ •⊰❂ GODSZEAL XMD  ❂⊱• ════ ❦',
                             serverMessageId: -1
                         }
                     }
@@ -82,8 +82,8 @@ async function autoreadCommand(sock, chatId, message) {
                 forwardingScore: 1,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363161513685998@newsletter',
-                    newsletterName: 'KnightBot MD',
+                    newsletterJid: '120363269950668068@newsletter',
+                    newsletterName: '❦ ════ •⊰❂ GODSZEAL XMD  ❂⊱• ════ ❦',
                     serverMessageId: -1
                 }
             }
