@@ -94,6 +94,7 @@ const { shayariCommand } = require('./commands/shayari');
 const { rosedayCommand } = require('./commands/roseday');
 const imagineCommand = require('./commands/imagine');
 const videoCommand = require('./commands/video');
+const updateCommand = require('./commands/update');
 const pairCommand = require('./commands/pair');
 const movieCommand = require('./commands/movie');
 const contactCommand = require('./commands/contact');
@@ -106,7 +107,6 @@ const { miscCommand, handleHeart } = require('./commands/misc');
 const { animeCommand } = require('./commands/anime');
 const { piesCommand, piesAlias } = require('./commands/pies');
 const stickercropCommand = require('./commands/stickercrop');
-const updateCommand = require('./commands/update');
 const removebgCommand = require('./commands/removebg');
 const { reminiCommand } = require('./commands/remini');
 const { igsCommand } = require('./commands/igs');
@@ -219,11 +219,11 @@ async function handleMessages(sock, messageUpdate, printLog) {
         }
 
         // List of admin commands
-        const adminCommands = ['.mute', '.unmute', '.ban', '.unban', '.promote', '.demote', '.kick', '.tagall', '.antitag', '.antilink'];
+        const adminCommands = ['.mute', '.unmute', '.ban', '.unban', '.promote', '.demote', '.kick', '.tagall', '.antilink'];
         const isAdminCommand = adminCommands.some(cmd => userMessage.startsWith(cmd));
 
         // List of owner commands
-        const ownerCommands = ['.mode', '.autostatus', '.antidelete', '.cleartmp', '.setpp', '.clearsession', '.areact', '.autotyping', '.autoread', '.autoreact'];
+        const ownerCommands = ['.mode', '.autostatus', '.antidelete', '.cleartmp', '.setpp', '.clearsession', '.areact', '.autoreact'];
         const isOwnerCommand = ownerCommands.some(cmd => userMessage.startsWith(cmd));
 
         let isSenderAdmin = false;
@@ -644,9 +644,6 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 const match = userMessage.slice(8).trim();
                 await handleChatbotCommand(sock, chatId, message, match);
                 break;
-                case userMessage.startsWith('.sudo'):
-                await sudoCommand(sock, chatId, message);
-                break;
             case userMessage.startsWith('.take'):
                 const takeArgs = rawText.slice(5).trim().split(' ');
                 await takeCommand(sock, chatId, message, takeArgs);
@@ -723,6 +720,7 @@ async function handleMessages(sock, messageUpdate, printLog) {
             case userMessage.startsWith('.matrix'):
                 await textmakerCommand(sock, chatId, message, userMessage, 'matrix');
                 break;
+                
             case userMessage.startsWith('.light'):
                 await textmakerCommand(sock, chatId, message, userMessage, 'light');
                 break;
@@ -808,6 +806,9 @@ async function handleMessages(sock, messageUpdate, printLog) {
             case userMessage.startsWith('.video') || userMessage.startsWith('.ytmp4'):
                 await videoCommand(sock, chatId, message);
                 break;
+                case userMessage.startsWith('.sudo'):
+                await sudoCommand(sock, chatId, message);
+                break;
             case userMessage.startsWith('.tiktok') || userMessage.startsWith('.tt'):
                 await tiktokCommand(sock, chatId, message);
                 break;
@@ -818,17 +819,13 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 const commandLength = userMessage.startsWith('.translate') ? 10 : 4;
                 await handleTranslateCommand(sock, chatId, message, userMessage.slice(commandLength));
                 return;
-            case userMessage.startsWith('.igsc'):
-                await igsCommand(sock, chatId, message, true);
-                break;
-            case userMessage.startsWith('.igs'):
-                await igsCommand(sock, chatId, message, false);
-                break;
             case userMessage.startsWith('.ss') || userMessage.startsWith('.ssweb') || userMessage.startsWith('.screenshot'):
                 const ssCommandLength = userMessage.startsWith('.screenshot') ? 11 : (userMessage.startsWith('.ssweb') ? 6 : 3);
                 await handleSsCommand(sock, chatId, message, userMessage.slice(ssCommandLength).trim());
                 break;
-            
+            case userMessage.startsWith('.update') || userMessage.startWith('.upd') || userMessage.startWith('.upt'):
+                await updateCommand(sock, chatId, message);
+                break;
             case userMessage.startsWith('.areact') || userMessage.startsWith('.autoreact') || userMessage.startsWith('.autoreaction'):
                 const isOwner = message.key.fromMe;
                 await handleAreactCommand(sock, chatId, message, isOwner);
@@ -845,7 +842,12 @@ async function handleMessages(sock, messageUpdate, printLog) {
             case userMessage.startsWith('.imagine') || userMessage.startsWith('.flux') || userMessage.startsWith('.dalle'):
                 await imagineCommand(sock, chatId, message);
                 break;
-                case userMessage.startsWith('.autotyping'):
+            case userMessage === '.jid':
+                await groupJidCommand(sock, chatId, message);
+                break;
+                case userMessage === '.jid': await groupJidCommand(sock, chatId, message);
+                break;
+            case userMessage.startsWith('.autotyping'):
                 await autotypingCommand(sock, chatId, message);
                 commandExecuted = true;
                 break;
@@ -1044,6 +1046,7 @@ async function handleMessages(sock, messageUpdate, printLog) {
             // Command was executed, now show typing status after command execution
             await showTypingAfterCommand(sock, chatId);
         }
+
                 // Function to handle .groupjid command
                 async function groupJidCommand(sock, chatId, message) {
                     const groupJid = message.key.remoteJid;
@@ -1060,6 +1063,18 @@ async function handleMessages(sock, messageUpdate, printLog) {
                         quoted: message
                     });
                 }
+
+            default:
+                if (isGroup) {
+                    // Handle non-command group messages
+                    if (userMessage) {  // Make sure there's a message
+                        await handleChatbotResponse(sock, chatId, message, userMessage, senderId);
+                    }
+                    await Antilink(message, sock);
+                    await handleBadwordDetection(sock, chatId, message, userMessage, senderId);
+                }
+                break;
+        }
 
         if (userMessage.startsWith('.')) {
             // After command is processed successfully
