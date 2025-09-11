@@ -826,9 +826,7 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 const ssCommandLength = userMessage.startsWith('.screenshot') ? 11 : (userMessage.startsWith('.ssweb') ? 6 : 3);
                 await handleSsCommand(sock, chatId, message, userMessage.slice(ssCommandLength).trim());
                 break;
-            case userMessage.startsWith('.update') || userMessage.startWith('.upd') || userMessage.startWith('.upt'):
-                await updateCommand(sock, chatId, message);
-                break;
+            
             case userMessage.startsWith('.areact') || userMessage.startsWith('.autoreact') || userMessage.startsWith('.autoreaction'):
                 const isOwner = message.key.fromMe;
                 await handleAreactCommand(sock, chatId, message, isOwner);
