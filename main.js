@@ -94,7 +94,6 @@ const { shayariCommand } = require('./commands/shayari');
 const { rosedayCommand } = require('./commands/roseday');
 const imagineCommand = require('./commands/imagine');
 const videoCommand = require('./commands/video');
-const updateCommand = require('./commands/update');
 const pairCommand = require('./commands/pair');
 const movieCommand = require('./commands/movie');
 const contactCommand = require('./commands/contact');
