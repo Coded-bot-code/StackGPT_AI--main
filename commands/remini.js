@@ -122,4 +122,4 @@ function isValidUrl(string) {
     }
 }
 
-module.exports = {𝗞𝗡𝗜𝗚𝗛𝗧-𝗕𝗢𝗧'𝗧'
+module.exports = { reminiCommand };
