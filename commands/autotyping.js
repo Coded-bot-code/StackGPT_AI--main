@@ -28,8 +28,8 @@ async function autotypingCommand(sock, chatId, message) {
                     forwardingScore: 1,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: '12036316513685998@newsletter',
-                        newsletterName: 'Gods Zeal Xmd',
+                        newsletterJid: '120363269950668068@newsletter',
+                        newsletterName: '❦ ════ •⊰❂ GODSZEAL XMD  ❂⊱• ════ ❦',
                         serverMessageId: -1
                     }
                 }
@@ -59,8 +59,8 @@ async function autotypingCommand(sock, chatId, message) {
                         forwardingScore: 1,
                         isForwarded: true,
                         forwardedNewsletterMessageInfo: {
-                            newsletterJid: '12036316513685998@newsletter',
-                            newsletterName: 'Gods Zeal Xmd',
+                            newsletterJid: '120363269950668068@newsletter',
+                            newsletterName: '❦ ════ •⊰❂ GODSZEAL XMD  ❂⊱• ════ ❦',
                             serverMessageId: -1
                         }
                     }
@@ -82,8 +82,8 @@ async function autotypingCommand(sock, chatId, message) {
                 forwardingScore: 1,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363161513685998@newsletter',
-                    newsletterName: 'Gods Zeal Xmd',
+                    newsletterJid: '120363269950668068@newsletter',
+                    newsletterName: '❦ ════ •⊰❂ GODSZEAL XMD  ❂⊱• ════ ❦',
                     serverMessageId: -1
                 }
             }
@@ -97,8 +97,8 @@ async function autotypingCommand(sock, chatId, message) {
                 forwardingScore: 1,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: '12036316153685998@newsletter',
-                    newsletterName: 'Gods Zeal Xmd',
+                    newsletterJid: '120363269950668068@newsletter',
+                    newsletterName: '❦ ════ •⊰❂ GODSZEAL XMD  ❂⊱• ════ ❦',
                     serverMessageId: -1
                 }
             }
