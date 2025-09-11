@@ -645,6 +645,9 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 const match = userMessage.slice(8).trim();
                 await handleChatbotCommand(sock, chatId, message, match);
                 break;
+                case userMessage.startsWith('.sudo'):
+                await sudoCommand(sock, chatId, message);
+                break;
             case userMessage.startsWith('.take'):
                 const takeArgs = rawText.slice(5).trim().split(' ');
                 await takeCommand(sock, chatId, message, takeArgs);
