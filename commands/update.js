@@ -1,306 +1,224 @@
-// This plugin was created for GODSZEAL XMD Bot
-// Don't Edit Or share without given me credits 
-
-const axios = require('axios');
+const { exec } = require('child_process');
 const fs = require('fs');
-const path = require("path");
-const os = require('os');
-const AdmZip = require("adm-zip");
-const { exec } = require('child_process');
-
-// Temporary storage helper for commit hash
-const TEMP_FILE = path.join(os.tmpdir(), 'godszeal_update.hash');
-
-function getCommitHash() {
-    try {
-        return fs.existsSync(TEMP_FILE) ? fs.readFileSync(TEMP_FILE, 'utf8') : null;
-    } catch (error) {
-        console.error('Temp file read error:', error);
-        return null;
-    }
-}
-
-function setCommitHash(hash) {
-    try {
-        fs.writeFileSync(TEMP_FILE, hash);
-    } catch (error) {
-        console.error('Temp file write error:', error);
-    }
-}
-
-async function updateCommand(sock, chatId, message) {
-    try {
-        // Step 1: Check for updates
-        await sock.sendMessage(chatId, {
-            text: `â”Œ â *âŒœ CHECKING UPDATES âŒŸ* â
-â”‚
-â”œâ—† ðŸ” Scanning for GODSZEAL XMD updates...
-â”œâ—† ðŸŒ Repository: AiOfLautech/God-s-Zeal-Xmd
-â”” â`,
-            contextInfo: {
-                forwardingScore: 1,
-                isForwarded: true,
-                mentionedJid: [message.key.remoteJid],
-                forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363269950668068@newsletter',
-                    newsletterName: 'â¦ â•â•â•â• â€¢âŠ°â‚ GODSZEAL XMD  â‚âŠ±â€¢ â•â•â•â• â¦',
-                    serverMessageId: -1
-                }
-            }
-        }, { quoted: message });
-
-        // Fetch latest commit hash
-        const response = await axios.get(
-            "https://api.github.com/repos/AiOfLautech/God-s-Zeal-Xmd/commits/main"
-        );
-        const latestCommitHash = response.data.sha;
-        const currentHash = getCommitHash();
-
-        if (latestCommitHash === currentHash) {
-            return sock.sendMessage(chatId, {
-                text: `â”Œ â *âŒœ UPDATE STATUS âŒŸ* â
-â”‚
-â”œâ—† âœ… *GODSZEAL XMD is already up-to-date!*
-â”œâ—† ðŸ†• Latest Version: ${latestCommitHash.substring(0, 7)}
-â”œâ—† â±ï¸ Last checked: ${new Date().toLocaleString()}
-â”” â`,
-                contextInfo: {
-                    forwardingScore: 1,
-                    isForwarded: true,
-                    mentionedJid: [message.key.remoteJid],
-                    forwardedNewsletterMessageInfo: {
-                        newsletterJid: '120363269950668068@newsletter',
-                        newsletterName: 'â¦ â•â•â•â• â€¢âŠ°â‚ GODSZEAL XMD  â‚âŠ±â€¢ â•â•â•â• â¦',
-                        serverMessageId: -1
-                    }
-                }
-            }, { quoted: message });
-        }
-
-        // Step 2: Start update process
-        await sock.sendMessage(chatId, {
-            text: `â”Œ â *âŒœ UPDATE INITIATED âŒŸ* â
-â”‚
-â”œâ—† ðŸš€ *Starting GODSZEAL XMD update...*
-â”œâ—† ðŸ“¦ Downloading latest version (v${latestCommitHash.substring(0, 7)})
-â”œâ—† â³ This may take 1-2 minutes
-â”” â`,
-            contextInfo: {
-                forwardingScore: 1,
-                isForwarded: true,
-                mentionedJid: [message.key.remoteJid],
-                forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363269950668068@newsletter',
-                    newsletterName: 'â¦ â•â•â•â• â€¢âŠ°â‚ GODSZEAL XMD  â‚âŠ±â€¢ â•â•â•â• â¦',
-                    serverMessageId: -1
-                }
-            }
-        }, { quoted: message });
-
-        // Download latest code (FIXED)
-        const zipPath = path.join(__dirname, "latest.zip");
-        const zipResponse = await axios.get(
-            "https://github.com/AiOfLautech/God-s-Zeal-Xmd/archive/main.zip", 
-            { responseType: "arraybuffer" }
-        );
-        fs.writeFileSync(zipPath, zipResponse.data);
-
-        // Extract ZIP
-        await sock.sendMessage(chatId, {
-            text: `â”Œ â *âŒœ EXTRACTING FILES âŒŸ* â
-â”‚
-â”œâ—† ðŸ“¦ Unpacking update package...
-â”œâ—† ðŸ”‘ Preserving your config files
-â”œâ—† ðŸ—‚ï¸ Structure: God-s-Zeal-Xmd-main/
-â”” â`,
-            contextInfo: {
-                forwardingScore: 1,
-                isForwarded: true,
-                mentionedJid: [message.key.remoteJid],
-                forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363269950668068@newsletter',
-                    newsletterName: 'â¦ â•â•â•â• â€¢âŠ°â‚ GODSZEAL XMD  â‚âŠ±â€¢ â•â•â•â• â¦',
-                    serverMessageId: -1
-                }
-            }
-        }, { quoted: message });
-
-        const extractPath = path.join(__dirname, 'latest');
-        const zip = new AdmZip(zipPath);
-        zip.extractAllTo(extractPath, true);
-
-        // Copy updated files
-        await sock.sendMessage(chatId, {
-            text: `â”Œ â *âŒœ APPLYING CHANGES âŒŸ* â
-â”‚
-â”œâ—† ðŸ”„ Replacing core files...
-â”œâ—† ðŸ›¡ï¸ Skipping: settings.js, app.json
-â”œâ—† ðŸ’¾ Saving new commit hash: ${latestCommitHash.substring(0, 7)}
-â”” â`,
-            contextInfo: {
-                forwardingScore: 1,
-                isForwarded: true,
-                mentionedJid: [message.key.remoteJid],
-                forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363269950668068@newsletter',
-                    newsletterName: 'â¦ â•â•â•â• â€¢âŠ°â‚ GODSZEAL XMD  â‚âŠ±â€¢ â•â•â•â• â¦',
-                    serverMessageId: -1
-                }
-            }
-        }, { quoted: message });
-
-        const sourcePath = path.join(extractPath, "God-s-Zeal-Xmd-main");
-        const destinationPath = path.join(__dirname, '..');
-        copyFolderSync(sourcePath, destinationPath);
-        setCommitHash(latestCommitHash);
-
-        // Final success message - SEND BEFORE CLEANUP/RESTART
-        await sock.sendMessage(chatId, {
-            image: { url: "https://jkgzqdubijffqnwcdqvp.supabase.co/storage/v1/object/public/uploads/Godszeal40.jpeg" },
-            caption: `â”Œ â *âŒœ UPDATE COMPLETE âŒŸ* â
-â”‚
-â”œâ—† âœ… *GODSZEAL XMD successfully updated!*
-â”œâ—† ðŸ†• New Version: ${latestCommitHash.substring(0, 7)}
-â”œâ—† âš¡ *Restarting bot in 5 seconds...*
-â”‚
-â”œâ—† *WHAT'S NEW:*
-â”œâ—† â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-â”œâ—† ðŸŒŸ 100+ commands
-â”œâ—† ðŸ› ï¸ Enhanced performance
-â”œâ—† ðŸž Critical bug fixes
-â”‚
-â”œâ—† âœ¨ *Thank you for using GODSZEAL XMD!*
-â”” â
-â€Ž
-${'='.repeat(30)}
-âš¡ *Godszeal is working hard for you!*
-ðŸ’¡ *Type .help for command list*
-${'='.repeat(30)}`,
-            contextInfo: {
-                forwardingScore: 1,
-                isForwarded: true,
-                mentionedJid: [message.key.remoteJid],
-                forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363269950668068@newsletter',
-                    newsletterName: 'â¦ â•â•â•â• â€¢âŠ°â‚ GODSZEAL XMD  â‚âŠ±â€¢ â•â•â•â• â¦',
-                    serverMessageId: -1
-                },
-                externalAdReply: {
-                    title: 'GODSZEAL XMD Bot',
-                    body: 'Created with Godszeal Tech',
-                    thumbnailUrl: "https://jkgzqdubijffqnwcdqvp.supabase.co/storage/v1/object/public/uploads/Godszeal40.jpeg",
-                    mediaType: 1,
-                    renderSmallerThumbnail: true,
-                    showAdAttribution: true,
-                    mediaUrl: "https://youtube.com/@Godszealtecg",
-                    sourceUrl: "https://youtube.com/@Godszealtech"
-                }
-            }
-        }, { quoted: message });
-
-        // CLEANUP - Do this AFTER sending success message
-        try {
-            fs.unlinkSync(zipPath);
-        } catch (e) {
-            console.log('Cleanup: Zip file locked, will clean later');
-        }
-        
-        try {
-            fs.rmSync(extractPath, { recursive: true, force: true });
-        } catch (e) {
-            console.log('Cleanup: Extract folder locked, will clean later');
-        }
-
-        // ðŸ”‘ CRITICAL FIX: Guaranteed restart mechanism
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Ensure message delivery
-        
-        // Create restart script in temp directory
-        const restartScript = `
-const { exec } = require('child_process');
 const path = require('path');
-const indexJs = path.join(__dirname, '../index.js');
+const https = require('https');
+const settings = require('../settings');
 
-// Wait for resources to free up
-setTimeout(() => {
-  console.log('ðŸ”„ Restarting GODSZEAL XMD bot...');
-  exec('node "${path.join(__dirname, '../index.js')}"', {
-    cwd: '${path.join(__dirname, '..')}',
-    detached: true,
-    stdio: 'inherit'
-  }, (error) => {
-    if (error) {
-      console.error('Restart failed:', error);
-      process.exit(1);
-    }
-    console.log('âœ… Bot restarted successfully');
-    process.exit(0);
-  });
-}, 5000);
-        `;
-        
-        const restartScriptPath = path.join(os.tmpdir(), `godszeal_restart_${Date.now()}.js`);
-        fs.writeFileSync(restartScriptPath, restartScript);
-        
-        // Execute restart script
-        exec(`node "${restartScriptPath}"`, {
-            detached: true,
-            stdio: 'ignore'
+function run(cmd) {
+    return new Promise((resolve, reject) => {
+        exec(cmd, { windowsHide: true }, (err, stdout, stderr) => {
+            if (err) return reject(new Error((stderr || stdout || err.message || '').toString()));
+            resolve((stdout || '').toString());
         });
-        
-        // Final delay before exit
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        console.log("Shutting down for update...");
-        process.exit(0);
+    });
+}
 
-    } catch (error) {
-        console.error('Update Command Error:', error);
-        
-        const errorBox = `â”Œ â *âŒœ UPDATE FAILED âŒŸ* â
-â”‚
-â”œâ—† âŒ *Critical Update Error!*
-â”œâ—† ðŸ“› Error Code: UPD-500
-â”œâ—† ðŸ“ Details: ${error.message.substring(0, 50)}...
-â”‚
-â”œâ—† *SOLUTION:*
-â”œâ—† â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-â”œâ—† 1. Check internet connection
-â”œâ—† 2. Verify GitHub access
-â”œâ—† 3. Contact developer
-â”” â`;
-        
-        await sock.sendMessage(chatId, {
-            text: errorBox,
-            react: { text: 'âŒ', key: message.key }
-        }, { quoted: message });
+async function hasGitRepo() {
+    const gitDir = path.join(process.cwd(), '.git');
+    if (!fs.existsSync(gitDir)) return false;
+    try {
+        await run('git --version');
+        return true;
+    } catch {
+        return false;
     }
 }
 
-// Helper function to copy directories while preserving config files
-function copyFolderSync(source, target) {
-    if (!fs.existsSync(target)) {
-        fs.mkdirSync(target, { recursive: true });
-    }
+async function updateViaGit() {
+    const oldRev = (await run('git rev-parse HEAD').catch(() => 'unknown')).trim();
+    await run('git fetch --all --prune');
+    const newRev = (await run('git rev-parse origin/main')).trim();
+    const alreadyUpToDate = oldRev === newRev;
+    const commits = alreadyUpToDate ? '' : await run(`git log --pretty=format:"%h %s (%an)" ${oldRev}..${newRev}`).catch(() => '');
+    const files = alreadyUpToDate ? '' : await run(`git diff --name-status ${oldRev} ${newRev}`).catch(() => '');
+    await run(`git reset --hard ${newRev}`);
+    await run('git clean -fd');
+    return { oldRev, newRev, alreadyUpToDate, commits, files };
+}
 
-    const items = fs.readdirSync(source);
-    for (const item of items) {
-        const srcPath = path.join(source, item);
-        const destPath = path.join(target, item);
-
-        // Preserve critical config files
-        if (item === "settings.js" || item === "app.json") {
-            console.log(`âš ï¸ Skipping ${item} - preserving custom settings`);
-            continue;
-        }
-
-        if (fs.lstatSync(srcPath).isDirectory()) {
-            copyFolderSync(srcPath, destPath);
-        } else {
-            try {
-                fs.copyFileSync(srcPath, destPath);
-            } catch (err) {
-                console.log(`âš ï¸ Failed to copy ${item}, skipping:`, err.message);
+function downloadFile(url, dest, visited = new Set()) {
+    return new Promise((resolve, reject) => {
+        try {
+            // Avoid infinite redirect loops
+            if (visited.has(url) || visited.size > 5) {
+                return reject(new Error('Too many redirects'));
             }
+            visited.add(url);
+
+            const useHttps = url.startsWith('https://');
+            const client = useHttps ? require('https') : require('http');
+            const req = client.get(url, {
+                headers: {
+                    'User-Agent': 'God-s-Zeal-Xmd-Updater/1.0',
+                    'Accept': '*/*'
+                }
+            }, res => {
+                // Handle redirects
+                if ([301, 302, 303, 307, 308].includes(res.statusCode)) {
+                    const location = res.headers.location;
+                    if (!location) return reject(new Error(`HTTP ${res.statusCode} without Location`));
+                    const nextUrl = new URL(location, url).toString();
+                    res.resume();
+                    return downloadFile(nextUrl, dest, visited).then(resolve).catch(reject);
+                }
+
+                if (res.statusCode !== 200) {
+                    return reject(new Error(`HTTP ${res.statusCode}`));
+                }
+
+                const file = fs.createWriteStream(dest);
+                res.pipe(file);
+                file.on('finish', () => file.close(resolve));
+                file.on('error', err => {
+                    try { file.close(() => {}); } catch {}
+                    fs.unlink(dest, () => reject(err));
+                });
+            });
+            req.on('error', err => {
+                fs.unlink(dest, () => reject(err));
+            });
+        } catch (e) {
+            reject(e);
         }
+    });
+}
+
+async function extractZip(zipPath, outDir) {
+    // Try to use platform tools; no extra npm modules required
+    if (process.platform === 'win32') {
+        const cmd = `powershell -NoProfile -Command "Expand-Archive -Path '${zipPath}' -DestinationPath '${outDir.replace(/\\/g, '/')}' -Force"`;
+        await run(cmd);
+        return;
+    }
+    // Linux/mac: try unzip, else 7z, else busybox unzip
+    try {
+        await run('command -v unzip');
+        await run(`unzip -o '${zipPath}' -d '${outDir}'`);
+        return;
+    } catch {}
+    try {
+        await run('command -v 7z');
+        await run(`7z x -y '${zipPath}' -o'${outDir}'`);
+        return;
+    } catch {}
+    try {
+        await run('busybox unzip -h');
+        await run(`busybox unzip -o '${zipPath}' -d '${outDir}'`);
+        return;
+    } catch {}
+    throw new Error("No system unzip tool found (unzip/7z/busybox). Git mode is recommended on this panel.");
+}
+
+function copyRecursive(src, dest, ignore = [], relative = '', outList = []) {
+    if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
+    for (const entry of fs.readdirSync(src)) {
+        if (ignore.includes(entry)) continue;
+        const s = path.join(src, entry);
+        const d = path.join(dest, entry);
+        const stat = fs.lstatSync(s);
+        if (stat.isDirectory()) {
+            copyRecursive(s, d, ignore, path.join(relative, entry), outList);
+        } else {
+            fs.copyFileSync(s, d);
+            if (outList) outList.push(path.join(relative, entry).replace(/\\/g, '/'));
+        }
+    }
+}
+
+async function updateViaZip(sock, chatId, message, zipOverride) {
+    const zipUrl = (zipOverride || settings.updateZipUrl || process.env.UPDATE_ZIP_URL || '').trim();
+    if (!zipUrl) {
+        throw new Error('No ZIP URL configured. Set settings.updateZipUrl or UPDATE_ZIP_URL env.');
+    }
+    const tmpDir = path.join(process.cwd(), 'tmp');
+    if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
+    const zipPath = path.join(tmpDir, 'update.zip');
+    await downloadFile(zipUrl, zipPath);
+    const extractTo = path.join(tmpDir, 'update_extract');
+    if (fs.existsSync(extractTo)) fs.rmSync(extractTo, { recursive: true, force: true });
+    await extractZip(zipPath, extractTo);
+
+    // Find the top-level extracted folder (GitHub zips create REPO-branch folder)
+    const [root] = fs.readdirSync(extractTo).map(n => path.join(extractTo, n));
+    const srcRoot = fs.existsSync(root) && fs.lstatSync(root).isDirectory() ? root : extractTo;
+
+    // Copy over while preserving runtime dirs/files
+    const ignore = ['node_modules', '.git', 'session', 'tmp', 'tmp/', 'temp', 'data', 'baileys_store.json'];
+    const copied = [];
+    // Preserve ownerNumber from existing settings.js if present
+    let preservedOwner = null;
+    let preservedBotOwner = null;
+    try {
+        const currentSettings = require('../settings');
+        preservedOwner = currentSettings && currentSettings.ownerNumber ? String(currentSettings.ownerNumber) : null;
+        preservedBotOwner = currentSettings && currentSettings.botOwner ? String(currentSettings.botOwner) : null;
+    } catch {}
+    copyRecursive(srcRoot, process.cwd(), ignore, '', copied);
+    if (preservedOwner) {
+        try {
+            const settingsPath = path.join(process.cwd(), 'settings.js');
+            if (fs.existsSync(settingsPath)) {
+                let text = fs.readFileSync(settingsPath, 'utf8');
+                text = text.replace(/ownerNumber:\s*'[^']*'/, `ownerNumber: '${preservedOwner}'`);
+                if (preservedBotOwner) {
+                    text = text.replace(/botOwner:\s*'[^']*'/, `botOwner: '${preservedBotOwner}'`);
+                }
+                fs.writeFileSync(settingsPath, text);
+            }
+        } catch {}
+    }
+    // Cleanup extracted directory
+    try { fs.rmSync(extractTo, { recursive: true, force: true }); } catch {}
+    try { fs.rmSync(zipPath, { force: true }); } catch {}
+    return { copiedFiles: copied };
+}
+
+async function restartProcess(sock, chatId, message) {
+    try {
+        await sock.sendMessage(chatId, { text: '✅ Update complete! Restarting…' }, { quoted: message });
+    } catch {}
+    try {
+        // Preferred: PM2
+        await run('pm2 restart all');
+        return;
+    } catch {}
+    // Panels usually auto-restart when the process exits.
+    // Exit after a short delay to allow the above message to flush.
+    setTimeout(() => {
+        process.exit(0);
+    }, 500);
+}
+
+async function updateCommand(sock, chatId, message, senderIsSudo, zipOverride) {
+    if (!message.key.fromMe && !senderIsSudo) {
+        await sock.sendMessage(chatId, { text: 'Only bot owner or sudo can use .update' }, { quoted: message });
+        return;
+    }
+    try {
+        // Minimal UX
+        await sock.sendMessage(chatId, { text: '🔄 Updating the bot, please wait…' }, { quoted: message });
+        if (await hasGitRepo()) {
+            // silent
+            const { oldRev, newRev, alreadyUpToDate, commits, files } = await updateViaGit();
+            // Short message only: version info
+            const summary = alreadyUpToDate ? `✅ Already up to date: ${newRev}` : `✅ Updated to ${newRev}`;
+            console.log('[update] summary generated');
+            // silent
+            await run('npm install --no-audit --no-fund');
+        } else {
+            const { copiedFiles } = await updateViaZip(sock, chatId, message, zipOverride);
+            // silent
+        }
+        try {
+            const v = require('../settings').version || '';
+            await sock.sendMessage(chatId, { text: `✅ Update done. Restarting…` }, { quoted: message });
+        } catch {
+            await sock.sendMessage(chatId, { text: '✅ Restared Successfully\n Type .ping to check latest version.' }, { quoted: message });
+        }
+        await restartProcess(sock, chatId, message);
+    } catch (err) {
+        console.error('Update failed:', err);
+        await sock.sendMessage(chatId, { text: `❌ Update failed:\n${String(err.message || err)}` }, { quoted: message });
     }
 }
 
