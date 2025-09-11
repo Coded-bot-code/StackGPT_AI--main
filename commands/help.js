@@ -113,7 +113,7 @@ async function helpCommand(sock, chatId, message) {
 ├◆ ʀᴜɴᴛɪᴍᴇ: Node.js v${process.version.replace('v', '')}
 ├◆ ᴄᴘᴜ: ${os.cpus()[0].model.split(' ')[0]} ${os.cpus()[0].speed}MHz
 ├◆ ʀᴀᴍ: ${formatRam(os.totalmem(), os.freemem())}
-├◆ ᴍᴏᴅᴇ: ${settings.mode || 'Public'}
+├◆ ᴍᴏᴅᴇ: ${settings.commandMode || 'Public'}
 ├◆ ᴍᴏᴏᴅ: ${getMoodEmoji()} ${getCountdown()}
 └ ◆
 ‎
