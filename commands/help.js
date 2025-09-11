@@ -31,7 +31,7 @@ function formatRam(total, free) {
 
 // Count total commands
 function countCommands() {
-    return 133; // Replace with actual command count
+    return 158; // Replace with actual command count
 }
 
 // Get mood emoji based on time
@@ -160,6 +160,7 @@ async function helpCommand(sock, chatId, message) {
 ├◆ .chatbot
 ├◆ .resetlink
 ├◆ .vcf
+├◆ .antitag <on/off>
 ├◆ .welcome <on/off>
 ├◆ .goodbye <on/off>
 └ ❏
@@ -171,8 +172,14 @@ async function helpCommand(sock, chatId, message) {
 ├◆ .clearsession
 ├◆ .antidelete
 ├◆ .cleartmp
+├◆ .update
 ├◆ .setpp <image>
-├◆ .autoreact
+├◆ .autoreact <on/off>
+├◆ .autostatus <on/off>
+├◆ .autostatus react <on/off>
+├◆ .autotyping <on/off>
+├◆ .autoread <on/off>
+├◆ .anticall <on/off
 └ ❏
 
 ┌ ❏ *⌜ IMAGE/STICKER ⌟* ❏
@@ -184,6 +191,22 @@ async function helpCommand(sock, chatId, message) {
 ├◆ .meme
 ├◆ .take <packname>
 ├◆ .emojimix <emj1+emj2>
+├◆ .igs <insta link>
+├◆ .igsc <insta link>
+├◆ .take <packname>
+├◆ .removebg
+├◆ .remini
+├◆ .crop <reply to image>
+└ ❏
+
+┌ ❏ *⌜ PIES COMMANDS ⌟* ❏
+│
+├◆ .pies <country>
+├◆ .china 
+├◆ .indonesia 
+├◆ .japan 
+├◆ .korea 
+├◆ .hijab
 └ ❏
 
 ┌ ❏ *⌜ GAME COMMANDS ⌟* ❏
@@ -258,6 +281,8 @@ async function helpCommand(sock, chatId, message) {
 ┌ ❏ *⌜ DEVELOPER COMMANDS ⌟* ❏
 │
 ├◆ .createapi <METHOD> <ENDPOINT> <RESPONSE_TYPE>
+├◆ .dev
+├◆ .developer
 └ ❏
 
 ┌ ❏ *⌜ TOOLS COMMANDS ⌟* ❏
@@ -265,6 +290,41 @@ async function helpCommand(sock, chatId, message) {
 ├◆ .tempnum <country-code>
 ├◆ .templist
 ├◆ .otpbox <number>
+└ ❏
+
+┌ ❏ *⌜ MISC COMMANDS ⌟* ❏
+│
+├◆ .heart
+├◆ .horny
+├◆ .circle
+├◆ .lgbt
+├◆ .lolice
+├◆ .its-so-stupid
+├◆ .namecard 
+├◆ .oogway
+├◆ .tweet
+├◆ .ytcomment 
+├◆ .comrade 
+├◆ .gay 
+├◆ .glass 
+├◆ .jail 
+├◆ .passed 
+├◆ .triggered
+└ ❏
+
+┌ ❏ *⌜ ANIME COMMANDS ⌟* ❏
+│
+├◆ .neko
+├◆ .waifu
+├◆ .loli
+├◆ .nom 
+├◆ .poke 
+├◆ .cry 
+├◆ .kiss 
+├◆ .pat 
+├◆ .hug 
+├◆ .wink 
+├◆ .facepalm 
 └ ❏
 
 ┌ ❏ *⌜ GITHUB COMMANDS ⌟* ❏
