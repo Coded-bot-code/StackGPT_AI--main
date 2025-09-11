@@ -39,4 +39,4 @@ async function anticallCommand(sock, chatId, message, args) {
     await sock.sendMessage(chatId, { text: `Anticall is now *${enable ? 'ENABLED' : 'DISABLED'}*.` }, { quoted: message });
 }
 
-module.exports = { anticallCommand, readStstatus''
+module.exports = { anticallCommand, readState };
